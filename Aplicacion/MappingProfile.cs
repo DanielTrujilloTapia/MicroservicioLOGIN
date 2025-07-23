@@ -7,7 +7,7 @@ namespace Microservicio.Login.Api.Aplicacion
     {
         public MappingProfile()
         {
-            CreateMap<Modelo.Login, LoginDto>();
+            CreateMap<Modelo.Usuarioss, UsuarioDto>();
         }
     }
 }

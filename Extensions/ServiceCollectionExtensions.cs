@@ -15,7 +15,7 @@ namespace Microservicio.Login.Api.Extensions
         {
             services.AddControllers()
                 .AddFluentValidation(cfg =>
-                    cfg.RegisterValidatorsFromAssemblyContaining<NuevoLogin>());
+                    cfg.RegisterValidatorsFromAssemblyContaining<NuevoUsuario>());
 
             // 👉 Agregar ContextoMongo como Singleton
             services.AddSingleton(sp =>
@@ -26,8 +26,8 @@ namespace Microservicio.Login.Api.Extensions
             });
 
             // Versión nueva (MediatR v12+):
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(NuevoLogin.Manejador).Assembly));
-            services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ConsultaLogin).Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(NuevoUsuario.Manejador).Assembly));
+            services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ConsultaUsuario).Assembly));
 
             return services;
         }

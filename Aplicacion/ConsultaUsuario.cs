@@ -6,11 +6,11 @@ using Microservicio.Login.Api.Persistencia;
 
 namespace Microservicio.Login.Api.Aplicacion
 {
-    public class ConsultaLogin
+    public class ConsultaUsuario
     {
-        public class ListaLogin : IRequest<List<LoginDto>> { }
+        public class ListaUsuario : IRequest<List<UsuarioDto>> { }
 
-        public class Manejador : IRequestHandler<ListaLogin, List<LoginDto>>
+        public class Manejador : IRequestHandler<ListaUsuario, List<UsuarioDto>>
         {
             private readonly ContextoMongo _contexto;
             private readonly IMapper _mapper;
@@ -21,10 +21,10 @@ namespace Microservicio.Login.Api.Aplicacion
                 _mapper = mapper;
             }
 
-            public async Task<List<LoginDto>> Handle(ListaLogin request, CancellationToken cancellationToken)
+            public async Task<List<UsuarioDto>> Handle(ListaUsuario request, CancellationToken cancellationToken)
             {
-                var logins = await _contexto.LoginCollection.Find(_ => true).ToListAsync();
-                return _mapper.Map<List<LoginDto>>(logins);
+                var usuarios = await _contexto.UsuarioCollection.Find(_ => true).ToListAsync();
+                return _mapper.Map<List<UsuarioDto>>(usuarios);
             }
         }
     }

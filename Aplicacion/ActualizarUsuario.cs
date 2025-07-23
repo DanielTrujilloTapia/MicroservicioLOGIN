@@ -2,37 +2,37 @@
 using MediatR;
 using Microservicio.Login.Api.Modelo;
 using Microservicio.Login.Api.Persistencia;
+using MongoDB.Driver;
 
 namespace Microservicio.Login.Api.Aplicacion
 {
-    public class NuevoLogin
+    public class ActualizarUsuario
     {
         // 📌 DTO de Request que implementa IRequest
-        public class Ejecuta : IRequest<Unit>
+        public class EjecutaActualizar : IRequest<Unit>
         {
+            public string UsuarioGuid { get; set; }
             public string Usuario { get; set; }
             public string Password { get; set; }
-            
-            // Nuevos campos
             public string PreguntaRecuperacion { get; set; }
             public string RespuestaRecuperacion { get; set; }
         }
 
         // 📌 Validación de FluentValidation
-        public class EjecutaValidacion : AbstractValidator<Ejecuta>
+        public class EjecutaValidacion : AbstractValidator<EjecutaActualizar>
         {
             public EjecutaValidacion()
             {
+                RuleFor(x => x.UsuarioGuid).NotEmpty().WithMessage("El GUID del login es obligatorio");
                 RuleFor(x => x.Usuario).NotEmpty().WithMessage("El nombre de usuario es obligatorio");
                 RuleFor(x => x.Password).NotEmpty().WithMessage("La contraseña es obligatoria");
-                // Validación para los nuevos campos
                 RuleFor(x => x.PreguntaRecuperacion).NotEmpty().WithMessage("La pregunta de recuperación es obligatoria");
                 RuleFor(x => x.RespuestaRecuperacion).NotEmpty().WithMessage("La respuesta de recuperación es obligatoria");
             }
         }
 
         // 📌 Manejador de MediatR
-        public class Manejador : IRequestHandler<Ejecuta, Unit>
+        public class Manejador : IRequestHandler<EjecutaActualizar, Unit>
         {
             private readonly ContextoMongo _context;
 
@@ -41,20 +41,31 @@ namespace Microservicio.Login.Api.Aplicacion
                 _context = context;
             }
 
-            public async Task<Unit> Handle(Ejecuta request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(EjecutaActualizar request, CancellationToken cancellationToken)
             {
-                var login = new Modelo.Login
+                var usuarioExistente = await _context.UsuarioCollection
+                    .Find(x => x.UsuarioGuid == request.UsuarioGuid)
+                    .FirstOrDefaultAsync();
+
+                if (usuarioExistente == null)
+                    throw new KeyNotFoundException("No se encontró el usuario especificado");
+
+                var usuarioActualizado = new Modelo.Usuarioss
                 {
+                    Id = usuarioExistente.Id, // Mantener el mismo ID
+                    UsuarioGuid = request.UsuarioGuid, // Mantener el mismo GUID
                     Usuario = request.Usuario,
                     Password = request.Password,
-                    FechaRegistro = DateTime.UtcNow,
-                    LoginGuid = Guid.NewGuid().ToString(),
-                    // Nuevos campos
                     PreguntaRecuperacion = request.PreguntaRecuperacion,
-                    RespuestaRecuperacion = request.RespuestaRecuperacion
+                    RespuestaRecuperacion = request.RespuestaRecuperacion,
+                    FechaRegistro = usuarioExistente.FechaRegistro // Mantener la fecha original
                 };
 
-                await _context.LoginCollection.InsertOneAsync(login);
+                await _context.UsuarioCollection.ReplaceOneAsync(
+                    x => x.UsuarioGuid == request.UsuarioGuid,
+                    usuarioActualizado,
+                    new ReplaceOptions { IsUpsert = false },
+                    cancellationToken);
 
                 return Unit.Value;
             }

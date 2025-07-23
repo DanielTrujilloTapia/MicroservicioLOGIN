@@ -13,7 +13,7 @@ namespace Microservicio.Login.Api.Persistencia
             _database = client.GetDatabase(databaseName);
         }
 
-        public IMongoCollection<Modelo.Login> LoginCollection =>
-            _database.GetCollection<Modelo.Login>("Login");
+        public IMongoCollection<Modelo.Usuarioss> UsuarioCollection =>
+            _database.GetCollection<Modelo.Usuarioss>("Usuario");
     }
 }

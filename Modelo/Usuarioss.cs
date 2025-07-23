@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Microservicio.Login.Api.Modelo
 {
-    public class Login
+    public class Usuarioss
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -19,8 +19,8 @@ namespace Microservicio.Login.Api.Modelo
         public DateTime FechaRegistro { get; set; }
 
         // Puedes agregar un GUID único para seguimiento (igual que tu AutorLibroGuid)
-        [BsonElement("loginGuid")]
-        public string LoginGuid { get; set; }
+        [BsonElement("usuarioGuid")]
+        public string UsuarioGuid { get; set; }
         
         // Nuevos campos
         [BsonElement("preguntaRecuperacion")]

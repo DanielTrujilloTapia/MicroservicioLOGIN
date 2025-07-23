@@ -6,28 +6,28 @@ namespace Microservicio.Login.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginControlador : ControllerBase
+    public class UsuarioControlador : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public LoginControlador(IMediator mediator)
+        public UsuarioControlador(IMediator mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<LoginDto>>> GetLogins()
+        public async Task<ActionResult<List<UsuarioDto>>> GetLogins()
         {
-            return await _mediator.Send(new ConsultaLogin.ListaLogin());
+            return await _mediator.Send(new ConsultaUsuario.ListaUsuario());
         }
 
         // Endpoint para buscar por usuario
         [HttpGet("usuario/{usuario}")]
-        public async Task<ActionResult<LoginDto>> GetPorUsuario(string usuario)
+        public async Task<ActionResult<UsuarioDto>> GetPorUsuario(string usuario)
         {
             try
             {
-                var result = await _mediator.Send(new ConsultaLoginPorUsuario.Ejecuta
+                var result = await _mediator.Send(new ConsultaPorUsuario.Ejecuta
                 {
                     Usuario = usuario // Búsqueda exacta (case-sensitive)
                 });
@@ -40,14 +40,14 @@ namespace Microservicio.Login.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearLogin([FromBody] NuevoLogin.Ejecuta data)
+        public async Task<IActionResult> CrearLogin([FromBody] NuevoUsuario.Ejecuta data)
         {
             await _mediator.Send(data);
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> ActualizarLogin([FromBody] ActualizarLogin.EjecutaActualizar data)
+        public async Task<IActionResult> ActualizarLogin([FromBody] ActualizarUsuario.EjecutaActualizar data)
         {
             try
             {
