@@ -16,7 +16,7 @@ namespace Microservicio.Login.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<UsuarioDto>>> GetLogins()
+        public async Task<ActionResult<List<UsuarioDto>>> GetUsuarios()
         {
             return await _mediator.Send(new ConsultaUsuario.ListaUsuario());
         }
@@ -40,14 +40,14 @@ namespace Microservicio.Login.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearLogin([FromBody] NuevoUsuario.Ejecuta data)
+        public async Task<IActionResult> CrearUsuario([FromBody] NuevoUsuario.Ejecuta data)
         {
             await _mediator.Send(data);
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> ActualizarLogin([FromBody] ActualizarUsuario.EjecutaActualizar data)
+        public async Task<IActionResult> ActualizarUsuario([FromBody] ActualizarUsuario.EjecutaActualizar data)
         {
             try
             {
