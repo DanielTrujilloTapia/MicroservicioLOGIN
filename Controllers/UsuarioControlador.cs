@@ -59,5 +59,33 @@ namespace Microservicio.Login.Api.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginUsu([FromBody] LoginUsuario.EjecutaLogin request)
+        {
+            try
+            {
+                var usuarioDto = await _mediator.Send(request);
+
+                return Ok(new
+                {
+                    mensaje = "Login exitoso",
+                    usuario = usuarioDto
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { mensaje = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { mensaje = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error interno del servidor", error = ex.Message });
+            }
+        }
+
     }
 }
